@@ -1,0 +1,42 @@
+name: Build OEC-Turbo Armbian
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Maximize build disk space
+        uses: easimon/maximize-build-space@master
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull submodules
+        run: git submodule update --init --recursive
+
+      - name: Install host build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git wget curl qemu-user-static binfmt-support \
+            build-essential libncurses-dev bison flex libssl-dev \
+            bc u-boot-tools device-tree-compiler cpio unzip rsync
+
+      - name: Compile OEC-Turbo image
+        run: |
+          ./compile.sh \
+          BOARD=rockchip-efused-wxy-oec \
+          BRANCH=legacy \
+          RELEASE=bookworm \
+          BUILD_MINIMAL=no \
+          BUILD_DESKTOP=no \
+          KERNEL_CONFIGURE=no \
+          COMPRESS_OUTPUTIMAGE=img.gz
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: oec-turbo-armbian-img
+          path: output/images/*.img.gz
