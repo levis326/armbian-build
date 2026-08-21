@@ -16,11 +16,8 @@ jobs:
       - name: Pull submodules
         run: git submodule update --init --recursive
 
-      - name: Install docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl enable --now docker
+      - name: Verify Docker availability
+        run: docker --version
 
       - name: Compile OEC-Turbo image
         run: |
