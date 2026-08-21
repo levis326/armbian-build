@@ -1,4 +1,4 @@
-name: Build OEC‑Turbo Armbian
+name: Build OEC-Turbo Armbian
 on:
   workflow_dispatch:
 
@@ -20,7 +20,7 @@ jobs:
           sudo apt-get install -y docker.io
           sudo systemctl enable --now docker
 
-      - name: Compile OEC‑Turbo image
+      - name: Compile OEC-Turbo image
         run: |
           ./compile.sh docker \
           BOARD=rockchip-efused-wxy-oec \
